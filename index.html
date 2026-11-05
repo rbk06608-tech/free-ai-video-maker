@@ -1,37 +1,410 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Free AI Video Maker</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free AI Video Maker</title>
+
+<style>
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family:Arial,"Noto Sans Bengali",sans-serif;
+  background:linear-gradient(135deg,#eef2ff,#fdf2f8);
+  color:#111827;
+}
+
+.container{
+  width:92%;
+  max-width:650px;
+  margin:30px auto;
+}
+
+.card{
+  background:white;
+  border-radius:24px;
+  padding:22px;
+  box-shadow:0 10px 35px rgba(0,0,0,.10);
+}
+
+.logo{
+  text-align:center;
+  font-size:34px;
+  font-weight:800;
+  margin-bottom:8px;
+}
+
+.subtitle{
+  text-align:center;
+  color:#6b7280;
+  margin-bottom:25px;
+}
+
+label{
+  display:block;
+  font-weight:bold;
+  margin:16px 0 8px;
+}
+
+textarea{
+  width:100%;
+  min-height:130px;
+  border:1px solid #d1d5db;
+  border-radius:14px;
+  padding:14px;
+  font-size:17px;
+  resize:vertical;
+  outline:none;
+}
+
+textarea:focus{
+  border-color:#6366f1;
+}
+
+input[type="file"]{
+  width:100%;
+  padding:12px;
+  border:1px dashed #9ca3af;
+  border-radius:12px;
+  background:#f9fafb;
+}
+
+input[type="color"]{
+  width:65px;
+  height:45px;
+  border:0;
+  padding:0;
+}
+
+button{
+  width:100%;
+  border:0;
+  border-radius:14px;
+  padding:15px;
+  margin-top:18px;
+  font-size:18px;
+  font-weight:bold;
+  cursor:pointer;
+  background:#4f46e5;
+  color:white;
+}
+
+button:disabled{
+  opacity:.6;
+}
+
+#preview{
+  width:100%;
+  margin-top:18px;
+  border-radius:16px;
+  display:none;
+}
+
+#status{
+  text-align:center;
+  margin-top:16px;
+  font-weight:bold;
+}
+
+#download{
+  display:none;
+  text-align:center;
+  margin-top:15px;
+  background:#16a34a;
+  color:white;
+  padding:14px;
+  border-radius:14px;
+  text-decoration:none;
+  font-weight:bold;
+}
+
+.footer{
+  text-align:center;
+  color:#6b7280;
+  font-size:13px;
+  margin-top:20px;
+}
+</style>
 </head>
+
 <body>
 
-  <h1>🎬 Free AI Video Maker</h1>
-  <p>বাংলা বা English-এ তোমার গল্প লিখে ভিডিও তৈরির শুরু করো।</p>
+<div class="container">
 
-  <textarea id="story" placeholder="এখানে তোমার গল্প বা অনুভূতি লিখুন..."></textarea>
+<div class="card">
 
-  <br><br>
+<div class="logo">🎬 Free AI Video Maker</div>
 
-  <button onclick="generate()">ভিডিও তৈরি করুন</button>
+<div class="subtitle">
+বাংলা বা English গল্প থেকে নিজের ছবি দিয়ে ছোট ভিডিও তৈরি করুন
+</div>
 
-  <p id="result"></p>
+<label>📝 আপনার গল্প / অনুভূতি</label>
 
-  <script>
-    function generate() {
-      const story = document.getElementById("story").value;
+<textarea id="story"
+placeholder="যেমন: একজন ছেলে নদীর পাশে বসে সূর্যাস্ত দেখছে..."></textarea>
 
-      if (!story.trim()) {
-        document.getElementById("result").innerText =
-          "আগে একটি গল্প লিখুন।";
-        return;
+<label>🖼️ ছবি Upload করুন</label>
+
+<input type="file" id="imageInput" accept="image/*">
+
+<img id="preview">
+
+<label>🎨 Background নির্বাচন করুন</label>
+
+<input type="color" id="bgColor" value="#111827">
+
+<button id="generateBtn" onclick="createVideo()">
+🎬 ভিডিও তৈরি করুন
+</button>
+
+<div id="status"></div>
+
+<a id="download" download="free-ai-video.webm">
+⬇️ ভিডিও Download করুন
+</a>
+
+</div>
+
+<div class="footer">
+Free AI Video Maker • আপনার ব্রাউজারেই ভিডিও তৈরি
+</div>
+
+</div>
+
+<script>
+
+const imageInput = document.getElementById("imageInput");
+const preview = document.getElementById("preview");
+
+imageInput.addEventListener("change", function(){
+
+  const file = this.files[0];
+
+  if(file){
+    preview.src = URL.createObjectURL(file);
+    preview.style.display = "block";
+  }
+
+});
+
+
+async function createVideo(){
+
+  const story = document.getElementById("story").value.trim();
+  const file = imageInput.files[0];
+  const bgColor = document.getElementById("bgColor").value;
+  const status = document.getElementById("status");
+  const button = document.getElementById("generateBtn");
+  const download = document.getElementById("download");
+
+  if(!story){
+    alert("আগে আপনার গল্প লিখুন।");
+    return;
+  }
+
+  if(!file){
+    alert("একটি ছবি Upload করুন।");
+    return;
+  }
+
+  button.disabled = true;
+  download.style.display = "none";
+
+  status.innerText = "⏳ ভিডিও তৈরি হচ্ছে...";
+
+  const img = new Image();
+
+  img.onload = async function(){
+
+    const canvas = document.createElement("canvas");
+
+    canvas.width = 720;
+    canvas.height = 1280;
+
+    const ctx = canvas.getContext("2d");
+
+    const stream = canvas.captureStream(30);
+
+    const recorder = new MediaRecorder(stream,{
+      mimeType:"video/webm"
+    });
+
+    const chunks = [];
+
+    recorder.ondataavailable = function(e){
+      if(e.data.size > 0){
+        chunks.push(e.data);
+      }
+    };
+
+    recorder.onstop = function(){
+
+      const blob = new Blob(chunks,{
+        type:"video/webm"
+      });
+
+      const url = URL.createObjectURL(blob);
+
+      download.href = url;
+      download.style.display = "block";
+
+      status.innerText = "✅ ভিডিও তৈরি হয়েছে!";
+
+      button.disabled = false;
+    };
+
+    recorder.start();
+
+    const duration = 8000;
+    const start = performance.now();
+
+    function draw(now){
+
+      const elapsed = now - start;
+      const progress = elapsed / duration;
+
+      ctx.fillStyle = bgColor;
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+
+      /* Image animation */
+
+      const scale = 1 + progress * 0.15;
+
+      const imageRatio = img.width / img.height;
+      const canvasRatio = canvas.width / canvas.height;
+
+      let drawWidth;
+      let drawHeight;
+
+      if(imageRatio > canvasRatio){
+        drawHeight = canvas.height * 0.75 * scale;
+        drawWidth = drawHeight * imageRatio;
+      }else{
+        drawWidth = canvas.width * 0.92 * scale;
+        drawHeight = drawWidth / imageRatio;
       }
 
-      document.getElementById("result").innerText =
-        "আপনার গল্প গ্রহণ করা হয়েছে। 🎬";
+      const x = (canvas.width - drawWidth) / 2;
+      const y = 80 + (canvas.height * 0.45 - drawHeight / 2);
+
+      ctx.save();
+
+      ctx.globalAlpha = 0.95;
+
+      ctx.drawImage(
+        img,
+        x,
+        y,
+        drawWidth,
+        drawHeight
+      );
+
+      ctx.restore();
+
+      /* Dark bottom area */
+
+      const gradient = ctx.createLinearGradient(
+        0,
+        700,
+        0,
+        canvas.height
+      );
+
+      gradient.addColorStop(0,"rgba(0,0,0,0)");
+      gradient.addColorStop(1,"rgba(0,0,0,.85)");
+
+      ctx.fillStyle = gradient;
+
+      ctx.fillRect(
+        0,
+        600,
+        canvas.width,
+        680
+      );
+
+      /* Story text */
+
+      ctx.fillStyle = "white";
+      ctx.textAlign = "center";
+      ctx.font = "bold 38px Arial";
+
+      const words = story.split(" ");
+
+      let lines = [];
+      let line = "";
+
+      for(let word of words){
+
+        let test = line + word + " ";
+
+        if(ctx.measureText(test).width > 620){
+
+          lines.push(line);
+          line = word + " ";
+
+        }else{
+
+          line = test;
+
+        }
+
+      }
+
+      lines.push(line);
+
+      const lineHeight = 55;
+
+      const startY =
+        canvas.height -
+        lines.length * lineHeight -
+        100;
+
+      lines.forEach((text,i)=>{
+
+        ctx.fillText(
+          text,
+          canvas.width/2,
+          startY + i*lineHeight
+        );
+
+      });
+
+      /* Watermark */
+
+      ctx.font = "bold 22px Arial";
+      ctx.fillStyle = "rgba(255,255,255,.75)";
+
+      ctx.fillText(
+        "Free AI Video Maker",
+        canvas.width/2,
+        45
+      );
+
+      if(elapsed < duration){
+
+        requestAnimationFrame(draw);
+
+      }else{
+
+        recorder.stop();
+
+      }
+
     }
-  </script>
+
+    requestAnimationFrame(draw);
+
+  };
+
+  img.src = URL.createObjectURL(file);
+
+}
+
+</script>
 
 </body>
 </html>
