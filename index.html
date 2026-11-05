@@ -1,49 +1,78 @@
 
-import gradio as gr
-import torch
-from diffusers import StableDiffusionPipeline
+<section id="ai-studio" style="background:#111827;color:white;padding:22px;border-radius:18px;margin:20px 0;font-family:Arial;">
+  <h2>🎨 AI Image Studio</h2>
+  <p>Create your dream images</p>
 
-MODEL_ID = "segmind/tiny-sd"
+  <textarea id="prompt" placeholder="Describe your image..."
+  style="width:100%;height:100px;padding:12px;box-sizing:border-box;border-radius:10px;"></textarea>
 
-pipe = None
+  <select id="style" style="width:100%;padding:13px;margin-top:12px;border-radius:10px;">
+    <option>Photorealistic</option>
+    <option>3D Animation</option>
+    <option>Cartoon</option>
+    <option>Anime</option>
+    <option>Cinematic</option>
+    <option>Digital Art</option>
+  </select>
 
-def load_model():
-    global pipe
-    if pipe is None:
-        pipe = StableDiffusionPipeline.from_pretrained(
-            MODEL_ID,
-            torch_dtype=torch.float32
-        )
-        pipe = pipe.to("cpu")
-    return pipe
+  <button onclick="createImage()" style="width:100%;padding:15px;background:#8b5cf6;color:white;border:0;border-radius:10px;margin-top:15px;font-size:17px;">
+    ✨ Generate Image
+  </button>
 
-def generate_image(prompt, style):
-    if not prompt.strip():
-        raise gr.Error("ছবির বর্ণনা লিখুন")
+  <p id="status"></p>
+  <div id="result"></div>
+</section>
 
-    model = load_model()
-    full_prompt = f"{prompt}, {style}, detailed, beautiful image"
-    image = model(
-        full_prompt,
-        num_inference_steps=15,
-        guidance_scale=7
-    ).images[0]
+<script>
+async function createImage() {
+  const prompt = document.getElementById("prompt").value.trim();
+  const style = document.getElementById("style").value;
+  const status = document.getElementById("status");
+  const result = document.getElementById("result");
 
-    return image
+  if (!prompt) {
+    status.innerText = "Please write an image description!";
+    return;
+  }
 
-demo = gr.Interface(
-    fn=generate_image,
-    inputs=[
-        gr.Textbox(label="Describe Your Image"),
-        gr.Dropdown(
-            ["Realistic", "3D Animation", "Cartoon", "Anime", "Cinematic"],
-            label="Image Style"
-        )
-    ],
-    outputs=gr.Image(label="Generated Image", type="pil"),
-    title="Free AI Image Studio",
-    description="Create AI images for free!"
-)
+  status.innerText = "Preparing your image...";
+  result.innerHTML = "";
 
-if __name__ == "__main__":
-    demo.launch()
+  try {
+    const response = await fetch("/api/generate-image", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        prompt: prompt,
+        style: style,
+        quality: "high"
+      })
+    });
+
+    if (!response.ok) throw new Error("Image service unavailable");
+
+    const data = await response.json();
+
+    if (!data.image_url) throw new Error("No image received");
+
+    const img = document.createElement("img");
+    img.src = data.image_url;
+    img.style.width = "100%";
+    img.style.borderRadius = "12px";
+    img.style.marginTop = "15px";
+    result.appendChild(img);
+
+    const link = document.createElement("a");
+    link.href = data.image_url;
+    link.download = "AI-Image.png";
+    link.innerText = "⬇ Download Image";
+    link.style.cssText = "display:block;padding:15px;background:#16a34a;color:white;text-align:center;border-radius:10px;margin-top:12px;text-decoration:none;";
+    result.appendChild(link);
+
+    status.innerText = "Image created successfully!";
+
+  } catch (error) {
+    status.innerText = "AI service is not connected yet. Please try again later.";
+  }
+}
+</script>
