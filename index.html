@@ -2,110 +2,93 @@
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Free AI Video Maker</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AI Dance Video Maker</title>
 
 <style>
 *{box-sizing:border-box}
 
 body{
-  margin:0;
-  font-family:Arial,"Noto Sans Bengali",sans-serif;
-  background:linear-gradient(135deg,#eef2ff,#fdf2f8);
-  color:#111827;
+ margin:0;
+ font-family:Arial,"Noto Sans Bengali",sans-serif;
+ background:linear-gradient(135deg,#eef2ff,#fdf2f8);
+ color:#111827;
 }
 
 .container{
-  width:92%;
-  max-width:650px;
-  margin:25px auto;
+ width:92%;
+ max-width:650px;
+ margin:25px auto;
 }
 
 .card{
-  background:white;
-  border-radius:24px;
-  padding:22px;
-  box-shadow:0 10px 35px rgba(0,0,0,.12);
+ background:white;
+ padding:22px;
+ border-radius:24px;
+ box-shadow:0 10px 35px rgba(0,0,0,.12);
 }
 
 .logo{
-  text-align:center;
-  font-size:32px;
-  font-weight:800;
+ text-align:center;
+ font-size:30px;
+ font-weight:800;
 }
 
 .subtitle{
-  text-align:center;
-  color:#6b7280;
-  margin:10px 0 25px;
+ text-align:center;
+ color:#6b7280;
+ margin:10px 0 25px;
 }
 
 label{
-  display:block;
-  font-weight:bold;
-  margin:16px 0 8px;
+ display:block;
+ font-weight:bold;
+ margin:18px 0 8px;
+}
+
+input,textarea,select{
+ width:100%;
+ padding:14px;
+ border:1px solid #d1d5db;
+ border-radius:13px;
+ font-size:16px;
+ background:#fff;
 }
 
 textarea{
-  width:100%;
-  min-height:130px;
-  border:1px solid #d1d5db;
-  border-radius:14px;
-  padding:14px;
-  font-size:17px;
-}
-
-input[type=file]{
-  width:100%;
-  padding:12px;
-  border:1px dashed #9ca3af;
-  border-radius:12px;
-}
-
-input[type=color]{
-  width:65px;
-  height:45px;
+ min-height:110px;
+ resize:vertical;
 }
 
 button{
-  width:100%;
-  border:0;
-  border-radius:14px;
-  padding:15px;
-  margin-top:18px;
-  font-size:18px;
-  font-weight:bold;
-  background:#4f46e5;
-  color:white;
+ width:100%;
+ margin-top:22px;
+ padding:16px;
+ border:0;
+ border-radius:14px;
+ background:#4f46e5;
+ color:white;
+ font-size:18px;
+ font-weight:bold;
 }
 
 button:disabled{
-  opacity:.6;
+ opacity:.6;
 }
 
-#preview{
-  width:100%;
-  margin-top:15px;
-  border-radius:16px;
-  display:none;
+.info{
+ margin-top:18px;
+ padding:14px;
+ border-radius:14px;
+ background:#f3f4f6;
+ color:#4b5563;
+ font-size:14px;
 }
 
 #status{
-  text-align:center;
-  margin-top:16px;
-  font-weight:bold;
-}
-
-#download{
-  display:none;
-  text-align:center;
-  margin-top:15px;
-  padding:14px;
-  border-radius:14px;
-  background:#16a34a;
-  color:white;
-  text-decoration:none;
-  font-weight:bold;
+ text-align:center;
+ margin-top:18px;
+ font-weight:bold;
 }
 </style>
 </head>
@@ -113,293 +96,122 @@ button:disabled{
 <body>
 
 <div class="container">
+
 <div class="card">
 
-<div class="logo">🎬 Free AI Video Maker</div>
+<div class="logo">🎬 AI Dance Video Maker</div>
 
 <div class="subtitle">
-বাংলা বা English গল্প এবং ছবি দিয়ে ভিডিও তৈরি করুন
+ছবি + গান + Dance Reference দিয়ে AI ভিডিও তৈরি করুন
 </div>
 
-<label>📝 গল্প / অনুভূতি</label>
+<label>🖼️ আপনার ছবি</label>
 
-<textarea id="story"
-placeholder="যেমন: একজন ছেলে নদীর পাশে বসে সূর্যাস্ত দেখছে..."></textarea>
+<input
+ type="file"
+ id="image"
+ accept="image/*">
 
-<label>🖼️ ছবি Upload করুন</label>
+<label>🎵 গান / Audio</label>
 
-<input type="file" id="imageInput" accept="image/*">
+<input
+ type="file"
+ id="audio"
+ accept="audio/*">
 
-<img id="preview">
+<label>💃 Dance Reference Video</label>
 
-<label>🎨 Background</label>
+<input
+ type="file"
+ id="danceVideo"
+ accept="video/*">
 
-<input type="color" id="bgColor" value="#111827">
+<label>📝 কীভাবে নাচবে?</label>
 
-<button id="generateBtn" onclick="createVideo()">
-🎬 ভিডিও তৈরি করুন
+<textarea
+ id="prompt"
+ placeholder="যেমন: মানুষটি হাসিমুখে গানের তালে নাচবে, মাথা ও হাত স্বাভাবিকভাবে নড়বে, চোখের পলক ফেলবে এবং মুখের expression গানটির সঙ্গে মিলবে।">
+</textarea>
+
+<label>🎭 Dance Style</label>
+
+<select id="style">
+<option>Natural Dance</option>
+<option>Bollywood Dance</option>
+<option>Bangla Viral Dance</option>
+<option>Romantic Dance</option>
+<option>Energetic Dance</option>
+<option>Slow Motion Dance</option>
+</select>
+
+<label>⏱️ Video Duration</label>
+
+<select id="duration">
+<option value="5">5 Seconds</option>
+<option value="8">8 Seconds</option>
+<option value="10">10 Seconds</option>
+</select>
+
+<button id="generate" onclick="generateVideo()">
+🤖 AI Generate Video
 </button>
 
 <div id="status"></div>
 
-<a id="download" download="free-ai-video.webm">
-⬇️ ভিডিও Download করুন
-</a>
+<div class="info">
+⚠️ এখন এটি AI generation request-এর interface।
+পরের ধাপে নিরাপদ server/backend-এর মাধ্যমে AI video model যুক্ত করা হবে।
+</div>
 
 </div>
+
 </div>
 
 <script>
 
-const imageInput = document.getElementById("imageInput");
-const preview = document.getElementById("preview");
+function generateVideo(){
 
-imageInput.addEventListener("change",function(){
+ const image=document.getElementById("image").files[0];
+ const audio=document.getElementById("audio").files[0];
+ const dance=document.getElementById("danceVideo").files[0];
 
-  const file=this.files[0];
+ const prompt=document.getElementById("prompt").value.trim();
 
-  if(file){
-    preview.src=URL.createObjectURL(file);
-    preview.style.display="block";
-  }
+ const status=document.getElementById("status");
+ const button=document.getElementById("generate");
 
-});
+ if(!image){
+   alert("আগে একটি ছবি Upload করুন।");
+   return;
+ }
 
-function createVideo(){
+ if(!audio){
+   alert("আগে একটি গান বা Audio Upload করুন।");
+   return;
+ }
 
-  const story=document.getElementById("story").value.trim();
-  const file=imageInput.files[0];
-  const bg=document.getElementById("bgColor").value;
-  const status=document.getElementById("status");
-  const button=document.getElementById("generateBtn");
-  const download=document.getElementById("download");
+ if(!dance){
+   alert("Dance Reference Video Upload করুন।");
+   return;
+ }
 
-  if(!story){
-    alert("আগে গল্প লিখুন।");
-    return;
-  }
+ if(!prompt){
+   alert("কীভাবে নাচবে সেটি লিখুন।");
+   return;
+ }
 
-  if(!file){
-    alert("আগে একটি ছবি Upload করুন।");
-    return;
-  }
+ button.disabled=true;
 
-  if(!window.MediaRecorder){
-    alert("এই ব্রাউজারে ভিডিও তৈরি করার সুবিধা নেই। Chrome ব্যবহার করুন।");
-    return;
-  }
+ status.innerText="⏳ AI Video তৈরির জন্য প্রস্তুত হচ্ছে...";
 
-  button.disabled=true;
-  download.style.display="none";
-  status.innerText="⏳ ভিডিও তৈরি হচ্ছে...";
+ setTimeout(function(){
 
-  const img=new Image();
+   status.innerText=
+   "✅ সব তথ্য প্রস্তুত। এখন AI backend যুক্ত করলেই ভিডিও তৈরি হবে।";
 
-  img.onload=function(){
+   button.disabled=false;
 
-    const canvas=document.createElement("canvas");
-
-    canvas.width=720;
-    canvas.height=1280;
-
-    const ctx=canvas.getContext("2d");
-
-    const stream=canvas.captureStream(24);
-
-    let mime="";
-
-    if(MediaRecorder.isTypeSupported("video/webm;codecs=vp8")){
-      mime="video/webm;codecs=vp8";
-    }else if(MediaRecorder.isTypeSupported("video/webm")){
-      mime="video/webm";
-    }else{
-      alert("এই ফোনে WebM ভিডিও তৈরি করা যাচ্ছে না।");
-      button.disabled=false;
-      return;
-    }
-
-    const recorder=new MediaRecorder(stream,{
-      mimeType:mime
-    });
-
-    const chunks=[];
-
-    recorder.ondataavailable=function(event){
-
-      if(event.data && event.data.size>0){
-        chunks.push(event.data);
-      }
-
-    };
-
-    recorder.onerror=function(){
-
-      status.innerText="❌ ভিডিও তৈরিতে সমস্যা হয়েছে।";
-      button.disabled=false;
-
-    };
-
-    recorder.onstop=function(){
-
-      const blob=new Blob(chunks,{
-        type:"video/webm"
-      });
-
-      const url=URL.createObjectURL(blob);
-
-      download.href=url;
-      download.style.display="block";
-
-      status.innerText="✅ ভিডিও তৈরি হয়েছে!";
-
-      button.disabled=false;
-
-    };
-
-    recorder.start(250);
-
-    const duration=6000;
-    const start=Date.now();
-
-    function draw(){
-
-      const elapsed=Date.now()-start;
-
-      let progress=elapsed/duration;
-
-      if(progress>1){
-        progress=1;
-      }
-
-      /* Background */
-
-      ctx.fillStyle=bg;
-      ctx.fillRect(0,0,720,1280);
-
-      /* Image */
-
-      const ratio=img.width/img.height;
-
-      let w=620;
-      let h=w/ratio;
-
-      const zoom=1+(progress*0.12);
-
-      w=w*zoom;
-      h=h*zoom;
-
-      const x=(720-w)/2;
-      const y=120+(500-h/2);
-
-      ctx.drawImage(img,x,y,w,h);
-
-      /* Dark bottom */
-
-      const gradient=ctx.createLinearGradient(
-        0,700,0,1280
-      );
-
-      gradient.addColorStop(0,"rgba(0,0,0,0)");
-      gradient.addColorStop(1,"rgba(0,0,0,.9)");
-
-      ctx.fillStyle=gradient;
-      ctx.fillRect(0,650,720,630);
-
-      /* Story */
-
-      ctx.fillStyle="white";
-      ctx.textAlign="center";
-      ctx.font="bold 36px Arial";
-
-      const words=story.split(/\s+/);
-      const lines=[];
-      let line="";
-
-      for(let i=0;i<words.length;i++){
-
-        const test=line+words[i]+" ";
-
-        if(ctx.measureText(test).width>620){
-
-          lines.push(line);
-          line=words[i]+" ";
-
-        }else{
-
-          line=test;
-
-        }
-
-      }
-
-      if(line){
-        lines.push(line);
-      }
-
-      const lineHeight=50;
-      const startY=1050-(lines.length*lineHeight)/2;
-
-      for(let i=0;i<lines.length;i++){
-
-        ctx.fillText(
-          lines[i],
-          360,
-          startY+(i*lineHeight)
-        );
-
-      }
-
-      /* Logo */
-
-      ctx.font="bold 22px Arial";
-      ctx.fillStyle="rgba(255,255,255,.8)";
-
-      ctx.fillText(
-        "Free AI Video Maker",
-        360,
-        50
-      );
-
-      if(elapsed<duration){
-
-        requestAnimationFrame(draw);
-
-      }else{
-
-        /* Give recorder one final frame */
-
-        setTimeout(function(){
-
-          recorder.stop();
-
-        },500);
-
-      }
-
-    }
-
-    requestAnimationFrame(draw);
-
-    /* Safety stop */
-
-    setTimeout(function(){
-
-      if(recorder.state==="recording"){
-        recorder.stop();
-      }
-
-    },7500);
-
-  };
-
-  img.onerror=function(){
-
-    status.innerText="❌ ছবিটি পড়তে সমস্যা হয়েছে।";
-    button.disabled=false;
-
-  };
-
-  img.src=URL.createObjectURL(file);
+ },1500);
 
 }
 
