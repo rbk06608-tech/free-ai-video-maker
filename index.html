@@ -1,219 +1,452 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>AI Dance Video Maker</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Free AI Dance Video Maker</title>
 
-<style>
-*{box-sizing:border-box}
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-body{
- margin:0;
- font-family:Arial,"Noto Sans Bengali",sans-serif;
- background:linear-gradient(135deg,#eef2ff,#fdf2f8);
- color:#111827;
-}
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #111827, #312e81);
+      color: white;
+      min-height: 100vh;
+    }
 
-.container{
- width:92%;
- max-width:650px;
- margin:25px auto;
-}
+    .container {
+      width: 94%;
+      max-width: 600px;
+      margin: auto;
+      padding: 25px 0 40px;
+    }
 
-.card{
- background:white;
- padding:22px;
- border-radius:24px;
- box-shadow:0 10px 35px rgba(0,0,0,.12);
-}
+    h1 {
+      text-align: center;
+      font-size: 30px;
+      margin-bottom: 8px;
+    }
 
-.logo{
- text-align:center;
- font-size:30px;
- font-weight:800;
-}
+    .subtitle {
+      text-align: center;
+      color: #d1d5db;
+      margin-bottom: 25px;
+    }
 
-.subtitle{
- text-align:center;
- color:#6b7280;
- margin:10px 0 25px;
-}
+    .card {
+      background: rgba(255,255,255,0.10);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 18px;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
 
-label{
- display:block;
- font-weight:bold;
- margin:18px 0 8px;
-}
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
 
-input,textarea,select{
- width:100%;
- padding:14px;
- border:1px solid #d1d5db;
- border-radius:13px;
- font-size:16px;
- background:#fff;
-}
+    input,
+    textarea,
+    select {
+      width: 100%;
+      padding: 13px;
+      border-radius: 12px;
+      border: none;
+      outline: none;
+      margin-bottom: 15px;
+      font-size: 15px;
+    }
 
-textarea{
- min-height:110px;
- resize:vertical;
-}
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
 
-button{
- width:100%;
- margin-top:22px;
- padding:16px;
- border:0;
- border-radius:14px;
- background:#4f46e5;
- color:white;
- font-size:18px;
- font-weight:bold;
-}
+    .upload {
+      background: rgba(255,255,255,0.12);
+      padding: 15px;
+      border-radius: 12px;
+      margin-bottom: 15px;
+    }
 
-button:disabled{
- opacity:.6;
-}
+    button {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(90deg, #ec4899, #8b5cf6);
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+    }
 
-.info{
- margin-top:18px;
- padding:14px;
- border-radius:14px;
- background:#f3f4f6;
- color:#4b5563;
- font-size:14px;
-}
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
 
-#status{
- text-align:center;
- margin-top:18px;
- font-weight:bold;
-}
-</style>
+    .status {
+      display: none;
+      margin-top: 18px;
+      padding: 15px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .loader {
+      width: 35px;
+      height: 35px;
+      border: 4px solid rgba(255,255,255,0.25);
+      border-top: 4px solid white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 10px auto;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .result {
+      display: none;
+      margin-top: 20px;
+    }
+
+    video {
+      width: 100%;
+      border-radius: 15px;
+      background: black;
+    }
+
+    .download {
+      display: block;
+      text-align: center;
+      margin-top: 12px;
+      padding: 14px;
+      border-radius: 12px;
+      background: #22c55e;
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .small {
+      font-size: 13px;
+      color: #cbd5e1;
+      margin-top: -8px;
+      margin-bottom: 12px;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .feature {
+      background: rgba(255,255,255,0.08);
+      padding: 12px;
+      border-radius: 12px;
+      text-align: center;
+      font-size: 14px;
+    }
+  </style>
 </head>
 
 <body>
 
 <div class="container">
 
-<div class="card">
+  <h1>🎬 Free AI Dance Video</h1>
 
-<div class="logo">🎬 AI Dance Video Maker</div>
+  <div class="subtitle">
+    ছবি থেকে দ্রুত AI Dance Video তৈরি করুন
+  </div>
 
-<div class="subtitle">
-ছবি + গান + Dance Reference দিয়ে AI ভিডিও তৈরি করুন
+  <div class="card">
+
+    <label>👤 আপনার ছবি</label>
+
+    <div class="upload">
+      <input
+        type="file"
+        id="imageInput"
+        accept="image/*"
+      >
+    </div>
+
+    <div class="small">
+      পরিষ্কার full-body ছবি দিলে ফলাফল ভালো হবে।
+    </div>
+
+
+    <label>💃 Dance Reference Video</label>
+
+    <div class="upload">
+      <input
+        type="file"
+        id="danceInput"
+        accept="video/*"
+      >
+    </div>
+
+    <div class="small">
+      যে ভিডিওর মতো নাচ করাতে চান সেটি দিন।
+    </div>
+
+
+    <label>🎵 গান / Audio</label>
+
+    <div class="upload">
+      <input
+        type="file"
+        id="audioInput"
+        accept="audio/*,video/*"
+      >
+    </div>
+
+
+    <label>💬 Dance Prompt</label>
+
+    <textarea
+      id="prompt"
+      placeholder="যেমন: গানের তালে সুন্দর energetic dance, হাত-পা ও শরীরের natural movement, head movement, facial expression এবং চোখের movement থাকবে।"
+    ></textarea>
+
+
+    <label>💃 Dance Style</label>
+
+    <select id="style">
+      <option value="natural">Natural Dance</option>
+      <option value="viral">Bangla Viral Dance</option>
+      <option value="bollywood">Bollywood Dance</option>
+      <option value="energetic">Energetic Dance</option>
+      <option value="romantic">Romantic Dance</option>
+      <option value="slow">Slow Motion Dance</option>
+    </select>
+
+
+    <label>⏱️ Video Duration</label>
+
+    <select id="duration">
+      <option value="5">5 Seconds - Fast</option>
+      <option value="8" selected>8 Seconds - Recommended</option>
+      <option value="10">10 Seconds</option>
+    </select>
+
+
+    <button id="generateBtn">
+      🚀 AI Generate Video
+    </button>
+
+    <div class="status" id="status">
+
+      <div class="loader"></div>
+
+      <div id="statusText">
+        ভিডিও তৈরি হচ্ছে...
+      </div>
+
+    </div>
+
+    <div class="result" id="result">
+
+      <h3>🎉 আপনার ভিডিও তৈরি!</h3>
+
+      <video
+        id="resultVideo"
+        controls
+        playsinline
+      ></video>
+
+      <a
+        id="downloadBtn"
+        class="download"
+        download="ai-dance-video.webm"
+      >
+        ⬇️ ভিডিও Download করুন
+      </a>
+
+    </div>
+
+  </div>
+
+
+  <div class="card">
+
+    <h3>✨ Features</h3>
+
+    <div class="features">
+
+      <div class="feature">
+        👤 Image Animation
+      </div>
+
+      <div class="feature">
+        💃 Dance Motion
+      </div>
+
+      <div class="feature">
+        🎵 Beat Sync
+      </div>
+
+      <div class="feature">
+        😊 Facial Motion
+      </div>
+
+      <div class="feature">
+        👀 Eye Movement
+      </div>
+
+      <div class="feature">
+        👄 Lip Movement
+      </div>
+
+    </div>
+
+  </div>
+
 </div>
 
-<label>🖼️ আপনার ছবি</label>
-
-<input
- type="file"
- id="image"
- accept="image/*">
-
-<label>🎵 গান / Audio</label>
-
-<input
- type="file"
- id="audio"
- accept="audio/*">
-
-<label>💃 Dance Reference Video</label>
-
-<input
- type="file"
- id="danceVideo"
- accept="video/*">
-
-<label>📝 কীভাবে নাচবে?</label>
-
-<textarea
- id="prompt"
- placeholder="যেমন: মানুষটি হাসিমুখে গানের তালে নাচবে, মাথা ও হাত স্বাভাবিকভাবে নড়বে, চোখের পলক ফেলবে এবং মুখের expression গানটির সঙ্গে মিলবে।">
-</textarea>
-
-<label>🎭 Dance Style</label>
-
-<select id="style">
-<option>Natural Dance</option>
-<option>Bollywood Dance</option>
-<option>Bangla Viral Dance</option>
-<option>Romantic Dance</option>
-<option>Energetic Dance</option>
-<option>Slow Motion Dance</option>
-</select>
-
-<label>⏱️ Video Duration</label>
-
-<select id="duration">
-<option value="5">5 Seconds</option>
-<option value="8">8 Seconds</option>
-<option value="10">10 Seconds</option>
-</select>
-
-<button id="generate" onclick="generateVideo()">
-🤖 AI Generate Video
-</button>
-
-<div id="status"></div>
-
-<div class="info">
-⚠️ এখন এটি AI generation request-এর interface।
-পরের ধাপে নিরাপদ server/backend-এর মাধ্যমে AI video model যুক্ত করা হবে।
-</div>
-
-</div>
-
-</div>
 
 <script>
 
-function generateVideo(){
+const imageInput = document.getElementById("imageInput");
+const danceInput = document.getElementById("danceInput");
+const audioInput = document.getElementById("audioInput");
 
- const image=document.getElementById("image").files[0];
- const audio=document.getElementById("audio").files[0];
- const dance=document.getElementById("danceVideo").files[0];
+const promptInput = document.getElementById("prompt");
+const styleInput = document.getElementById("style");
+const durationInput = document.getElementById("duration");
 
- const prompt=document.getElementById("prompt").value.trim();
+const generateBtn = document.getElementById("generateBtn");
 
- const status=document.getElementById("status");
- const button=document.getElementById("generate");
+const status = document.getElementById("status");
+const statusText = document.getElementById("statusText");
 
- if(!image){
-   alert("আগে একটি ছবি Upload করুন।");
-   return;
- }
+const result = document.getElementById("result");
+const resultVideo = document.getElementById("resultVideo");
+const downloadBtn = document.getElementById("downloadBtn");
 
- if(!audio){
-   alert("আগে একটি গান বা Audio Upload করুন।");
-   return;
- }
 
- if(!dance){
-   alert("Dance Reference Video Upload করুন।");
-   return;
- }
+generateBtn.addEventListener("click", async () => {
 
- if(!prompt){
-   alert("কীভাবে নাচবে সেটি লিখুন।");
-   return;
- }
+  if (!imageInput.files.length) {
+    alert("আগে একটি ছবি নির্বাচন করুন।");
+    return;
+  }
 
- button.disabled=true;
+  if (!danceInput.files.length) {
+    alert("একটি Dance Reference Video নির্বাচন করুন।");
+    return;
+  }
 
- status.innerText="⏳ AI Video তৈরির জন্য প্রস্তুত হচ্ছে...";
+  if (!audioInput.files.length) {
+    alert("একটি গান বা Audio নির্বাচন করুন।");
+    return;
+  }
 
- setTimeout(function(){
 
-   status.innerText=
-   "✅ সব তথ্য প্রস্তুত। এখন AI backend যুক্ত করলেই ভিডিও তৈরি হবে।";
+  generateBtn.disabled = true;
 
-   button.disabled=false;
+  status.style.display = "block";
+  result.style.display = "none";
 
- },1500);
+  statusText.innerText =
+    "⚡ দ্রুত AI Video Generation শুরু হচ্ছে...";
 
-}
+
+  /*
+    IMPORTANT:
+
+    এখানে পরে আমাদের আসল AI API/backend যুক্ত হবে।
+
+    GitHub Pages সরাসরি বড় AI model চালাতে পারে না।
+
+    Frontend:
+    ছবি + Dance Video + Audio
+          ↓
+    Backend/API
+          ↓
+    AI Dance Model
+          ↓
+    Generated Video
+          ↓
+    এই পেজে দেখানো হবে
+  */
+
+
+  const imageFile = imageInput.files[0];
+  const danceFile = danceInput.files[0];
+  const audioFile = audioInput.files[0];
+
+  const settings = {
+    style: styleInput.value,
+    duration: durationInput.value,
+    prompt: promptInput.value
+  };
+
+
+  console.log("Image:", imageFile.name);
+  console.log("Dance:", danceFile.name);
+  console.log("Audio:", audioFile.name);
+  console.log("Settings:", settings);
+
+
+  /*
+    এখন demo processing দেখানো হচ্ছে।
+    আসল AI backend যুক্ত হলে এই অংশ replace হবে।
+  */
+
+  let seconds = 0;
+
+  const timer = setInterval(() => {
+
+    seconds++;
+
+    if (seconds <= 5) {
+
+      statusText.innerText =
+        "⚡ AI motion প্রস্তুত হচ্ছে... " +
+        seconds +
+        "/5";
+
+    }
+
+    if (seconds === 5) {
+
+      clearInterval(timer);
+
+      statusText.innerText =
+        "ℹ️ AI backend এখনো সংযুক্ত হয়নি।";
+
+      generateBtn.disabled = false;
+
+      setTimeout(() => {
+
+        alert(
+          "আপনার ছবি, গান এবং Dance Reference ঠিকভাবে নেওয়া হয়েছে। এখন শুধু AI backend/API সংযোগ করলেই সত্যিকারের AI Dance Video তৈরি হবে।"
+        );
+
+      }, 300);
+
+    }
+
+  }, 1000);
+
+});
 
 </script>
 
