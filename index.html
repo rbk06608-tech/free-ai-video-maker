@@ -6,9 +6,7 @@
 <title>Free AI Video Maker</title>
 
 <style>
-*{
-  box-sizing:border-box;
-}
+*{box-sizing:border-box}
 
 body{
   margin:0;
@@ -20,27 +18,26 @@ body{
 .container{
   width:92%;
   max-width:650px;
-  margin:30px auto;
+  margin:25px auto;
 }
 
 .card{
   background:white;
   border-radius:24px;
   padding:22px;
-  box-shadow:0 10px 35px rgba(0,0,0,.10);
+  box-shadow:0 10px 35px rgba(0,0,0,.12);
 }
 
 .logo{
   text-align:center;
-  font-size:34px;
+  font-size:32px;
   font-weight:800;
-  margin-bottom:8px;
 }
 
 .subtitle{
   text-align:center;
   color:#6b7280;
-  margin-bottom:25px;
+  margin:10px 0 25px;
 }
 
 label{
@@ -56,27 +53,18 @@ textarea{
   border-radius:14px;
   padding:14px;
   font-size:17px;
-  resize:vertical;
-  outline:none;
 }
 
-textarea:focus{
-  border-color:#6366f1;
-}
-
-input[type="file"]{
+input[type=file]{
   width:100%;
   padding:12px;
   border:1px dashed #9ca3af;
   border-radius:12px;
-  background:#f9fafb;
 }
 
-input[type="color"]{
+input[type=color]{
   width:65px;
   height:45px;
-  border:0;
-  padding:0;
 }
 
 button{
@@ -87,7 +75,6 @@ button{
   margin-top:18px;
   font-size:18px;
   font-weight:bold;
-  cursor:pointer;
   background:#4f46e5;
   color:white;
 }
@@ -98,7 +85,7 @@ button:disabled{
 
 #preview{
   width:100%;
-  margin-top:18px;
+  margin-top:15px;
   border-radius:16px;
   display:none;
 }
@@ -113,19 +100,12 @@ button:disabled{
   display:none;
   text-align:center;
   margin-top:15px;
-  background:#16a34a;
-  color:white;
   padding:14px;
   border-radius:14px;
+  background:#16a34a;
+  color:white;
   text-decoration:none;
   font-weight:bold;
-}
-
-.footer{
-  text-align:center;
-  color:#6b7280;
-  font-size:13px;
-  margin-top:20px;
 }
 </style>
 </head>
@@ -133,16 +113,15 @@ button:disabled{
 <body>
 
 <div class="container">
-
 <div class="card">
 
 <div class="logo">🎬 Free AI Video Maker</div>
 
 <div class="subtitle">
-বাংলা বা English গল্প থেকে নিজের ছবি দিয়ে ছোট ভিডিও তৈরি করুন
+বাংলা বা English গল্প এবং ছবি দিয়ে ভিডিও তৈরি করুন
 </div>
 
-<label>📝 আপনার গল্প / অনুভূতি</label>
+<label>📝 গল্প / অনুভূতি</label>
 
 <textarea id="story"
 placeholder="যেমন: একজন ছেলে নদীর পাশে বসে সূর্যাস্ত দেখছে..."></textarea>
@@ -153,7 +132,7 @@ placeholder="যেমন: একজন ছেলে নদীর পাশে �
 
 <img id="preview">
 
-<label>🎨 Background নির্বাচন করুন</label>
+<label>🎨 Background</label>
 
 <input type="color" id="bgColor" value="#111827">
 
@@ -168,11 +147,6 @@ placeholder="যেমন: একজন ছেলে নদীর পাশে �
 </a>
 
 </div>
-
-<div class="footer">
-Free AI Video Maker • আপনার ব্রাউজারেই ভিডিও তৈরি
-</div>
-
 </div>
 
 <script>
@@ -180,217 +154,225 @@ Free AI Video Maker • আপনার ব্রাউজারেই ভিড
 const imageInput = document.getElementById("imageInput");
 const preview = document.getElementById("preview");
 
-imageInput.addEventListener("change", function(){
+imageInput.addEventListener("change",function(){
 
-  const file = this.files[0];
+  const file=this.files[0];
 
   if(file){
-    preview.src = URL.createObjectURL(file);
-    preview.style.display = "block";
+    preview.src=URL.createObjectURL(file);
+    preview.style.display="block";
   }
 
 });
 
+function createVideo(){
 
-async function createVideo(){
-
-  const story = document.getElementById("story").value.trim();
-  const file = imageInput.files[0];
-  const bgColor = document.getElementById("bgColor").value;
-  const status = document.getElementById("status");
-  const button = document.getElementById("generateBtn");
-  const download = document.getElementById("download");
+  const story=document.getElementById("story").value.trim();
+  const file=imageInput.files[0];
+  const bg=document.getElementById("bgColor").value;
+  const status=document.getElementById("status");
+  const button=document.getElementById("generateBtn");
+  const download=document.getElementById("download");
 
   if(!story){
-    alert("আগে আপনার গল্প লিখুন।");
+    alert("আগে গল্প লিখুন।");
     return;
   }
 
   if(!file){
-    alert("একটি ছবি Upload করুন।");
+    alert("আগে একটি ছবি Upload করুন।");
     return;
   }
 
-  button.disabled = true;
-  download.style.display = "none";
+  if(!window.MediaRecorder){
+    alert("এই ব্রাউজারে ভিডিও তৈরি করার সুবিধা নেই। Chrome ব্যবহার করুন।");
+    return;
+  }
 
-  status.innerText = "⏳ ভিডিও তৈরি হচ্ছে...";
+  button.disabled=true;
+  download.style.display="none";
+  status.innerText="⏳ ভিডিও তৈরি হচ্ছে...";
 
-  const img = new Image();
+  const img=new Image();
 
-  img.onload = async function(){
+  img.onload=function(){
 
-    const canvas = document.createElement("canvas");
+    const canvas=document.createElement("canvas");
 
-    canvas.width = 720;
-    canvas.height = 1280;
+    canvas.width=720;
+    canvas.height=1280;
 
-    const ctx = canvas.getContext("2d");
+    const ctx=canvas.getContext("2d");
 
-    const stream = canvas.captureStream(30);
+    const stream=canvas.captureStream(24);
 
-    const recorder = new MediaRecorder(stream,{
-      mimeType:"video/webm"
+    let mime="";
+
+    if(MediaRecorder.isTypeSupported("video/webm;codecs=vp8")){
+      mime="video/webm;codecs=vp8";
+    }else if(MediaRecorder.isTypeSupported("video/webm")){
+      mime="video/webm";
+    }else{
+      alert("এই ফোনে WebM ভিডিও তৈরি করা যাচ্ছে না।");
+      button.disabled=false;
+      return;
+    }
+
+    const recorder=new MediaRecorder(stream,{
+      mimeType:mime
     });
 
-    const chunks = [];
+    const chunks=[];
 
-    recorder.ondataavailable = function(e){
-      if(e.data.size > 0){
-        chunks.push(e.data);
+    recorder.ondataavailable=function(event){
+
+      if(event.data && event.data.size>0){
+        chunks.push(event.data);
       }
+
     };
 
-    recorder.onstop = function(){
+    recorder.onerror=function(){
 
-      const blob = new Blob(chunks,{
+      status.innerText="❌ ভিডিও তৈরিতে সমস্যা হয়েছে।";
+      button.disabled=false;
+
+    };
+
+    recorder.onstop=function(){
+
+      const blob=new Blob(chunks,{
         type:"video/webm"
       });
 
-      const url = URL.createObjectURL(blob);
+      const url=URL.createObjectURL(blob);
 
-      download.href = url;
-      download.style.display = "block";
+      download.href=url;
+      download.style.display="block";
 
-      status.innerText = "✅ ভিডিও তৈরি হয়েছে!";
+      status.innerText="✅ ভিডিও তৈরি হয়েছে!";
 
-      button.disabled = false;
+      button.disabled=false;
+
     };
 
-    recorder.start();
+    recorder.start(250);
 
-    const duration = 8000;
-    const start = performance.now();
+    const duration=6000;
+    const start=Date.now();
 
-    function draw(now){
+    function draw(){
 
-      const elapsed = now - start;
-      const progress = elapsed / duration;
+      const elapsed=Date.now()-start;
 
-      ctx.fillStyle = bgColor;
-      ctx.fillRect(0,0,canvas.width,canvas.height);
+      let progress=elapsed/duration;
 
-      /* Image animation */
-
-      const scale = 1 + progress * 0.15;
-
-      const imageRatio = img.width / img.height;
-      const canvasRatio = canvas.width / canvas.height;
-
-      let drawWidth;
-      let drawHeight;
-
-      if(imageRatio > canvasRatio){
-        drawHeight = canvas.height * 0.75 * scale;
-        drawWidth = drawHeight * imageRatio;
-      }else{
-        drawWidth = canvas.width * 0.92 * scale;
-        drawHeight = drawWidth / imageRatio;
+      if(progress>1){
+        progress=1;
       }
 
-      const x = (canvas.width - drawWidth) / 2;
-      const y = 80 + (canvas.height * 0.45 - drawHeight / 2);
+      /* Background */
 
-      ctx.save();
+      ctx.fillStyle=bg;
+      ctx.fillRect(0,0,720,1280);
 
-      ctx.globalAlpha = 0.95;
+      /* Image */
 
-      ctx.drawImage(
-        img,
-        x,
-        y,
-        drawWidth,
-        drawHeight
-      );
+      const ratio=img.width/img.height;
 
-      ctx.restore();
+      let w=620;
+      let h=w/ratio;
 
-      /* Dark bottom area */
+      const zoom=1+(progress*0.12);
 
-      const gradient = ctx.createLinearGradient(
-        0,
-        700,
-        0,
-        canvas.height
+      w=w*zoom;
+      h=h*zoom;
+
+      const x=(720-w)/2;
+      const y=120+(500-h/2);
+
+      ctx.drawImage(img,x,y,w,h);
+
+      /* Dark bottom */
+
+      const gradient=ctx.createLinearGradient(
+        0,700,0,1280
       );
 
       gradient.addColorStop(0,"rgba(0,0,0,0)");
-      gradient.addColorStop(1,"rgba(0,0,0,.85)");
+      gradient.addColorStop(1,"rgba(0,0,0,.9)");
 
-      ctx.fillStyle = gradient;
+      ctx.fillStyle=gradient;
+      ctx.fillRect(0,650,720,630);
 
-      ctx.fillRect(
-        0,
-        600,
-        canvas.width,
-        680
-      );
+      /* Story */
 
-      /* Story text */
+      ctx.fillStyle="white";
+      ctx.textAlign="center";
+      ctx.font="bold 36px Arial";
 
-      ctx.fillStyle = "white";
-      ctx.textAlign = "center";
-      ctx.font = "bold 38px Arial";
+      const words=story.split(/\s+/);
+      const lines=[];
+      let line="";
 
-      const words = story.split(" ");
+      for(let i=0;i<words.length;i++){
 
-      let lines = [];
-      let line = "";
+        const test=line+words[i]+" ";
 
-      for(let word of words){
-
-        let test = line + word + " ";
-
-        if(ctx.measureText(test).width > 620){
+        if(ctx.measureText(test).width>620){
 
           lines.push(line);
-          line = word + " ";
+          line=words[i]+" ";
 
         }else{
 
-          line = test;
+          line=test;
 
         }
 
       }
 
-      lines.push(line);
+      if(line){
+        lines.push(line);
+      }
 
-      const lineHeight = 55;
+      const lineHeight=50;
+      const startY=1050-(lines.length*lineHeight)/2;
 
-      const startY =
-        canvas.height -
-        lines.length * lineHeight -
-        100;
-
-      lines.forEach((text,i)=>{
+      for(let i=0;i<lines.length;i++){
 
         ctx.fillText(
-          text,
-          canvas.width/2,
-          startY + i*lineHeight
+          lines[i],
+          360,
+          startY+(i*lineHeight)
         );
 
-      });
+      }
 
-      /* Watermark */
+      /* Logo */
 
-      ctx.font = "bold 22px Arial";
-      ctx.fillStyle = "rgba(255,255,255,.75)";
+      ctx.font="bold 22px Arial";
+      ctx.fillStyle="rgba(255,255,255,.8)";
 
       ctx.fillText(
         "Free AI Video Maker",
-        canvas.width/2,
-        45
+        360,
+        50
       );
 
-      if(elapsed < duration){
+      if(elapsed<duration){
 
         requestAnimationFrame(draw);
 
       }else{
 
-        recorder.stop();
+        /* Give recorder one final frame */
+
+        setTimeout(function(){
+
+          recorder.stop();
+
+        },500);
 
       }
 
@@ -398,9 +380,26 @@ async function createVideo(){
 
     requestAnimationFrame(draw);
 
+    /* Safety stop */
+
+    setTimeout(function(){
+
+      if(recorder.state==="recording"){
+        recorder.stop();
+      }
+
+    },7500);
+
   };
 
-  img.src = URL.createObjectURL(file);
+  img.onerror=function(){
+
+    status.innerText="❌ ছবিটি পড়তে সমস্যা হয়েছে।";
+    button.disabled=false;
+
+  };
+
+  img.src=URL.createObjectURL(file);
 
 }
 
