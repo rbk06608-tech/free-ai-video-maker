@@ -76,3 +76,23 @@ async function createImage() {
   }
 }
 </script>
+
+import gradio as gr
+from diffusers import DiffusionPipeline
+import torch
+
+pipe = DiffusionPipeline.from_pretrained("damo-vilab/modelscope-t2v", torch_dtype=torch.float16)
+pipe.to("cuda")
+
+def make_video(prompt):
+    video = pipe(prompt, num_frames=16).frames
+    return video
+
+demo = gr.Interface(
+  fn=make_video,
+  inputs=gr.Textbox(label="কি ভিডিও বানাতে চাও? বাংলায় লেখো"),
+  outputs=gr.Video(label="তোমার ভিডিও"),
+  title="DubVillage - ফ্রি AI ভিডিও",
+  description="দিনে ৩টা ভিডিও ফ্রি"
+)
+demo.launch()
