@@ -1,98 +1,254 @@
 
-<section id="ai-studio" style="background:#111827;color:white;padding:22px;border-radius:18px;margin:20px 0;font-family:Arial;">
-  <h2>🎨 AI Image Studio</h2>
-  <p>Create your dream images</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Barun AI Image Generator</title>
 
-  <textarea id="prompt" placeholder="Describe your image..."
-  style="width:100%;height:100px;padding:12px;box-sizing:border-box;border-radius:10px;"></textarea>
+<style>
+* {
+  box-sizing: border-box;
+}
 
-  <select id="style" style="width:100%;padding:13px;margin-top:12px;border-radius:10px;">
-    <option>Photorealistic</option>
-    <option>3D Animation</option>
-    <option>Cartoon</option>
-    <option>Anime</option>
-    <option>Cinematic</option>
-    <option>Digital Art</option>
-  </select>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #10111b;
+  color: white;
+}
 
-  <button onclick="createImage()" style="width:100%;padding:15px;background:#8b5cf6;color:white;border:0;border-radius:10px;margin-top:15px;font-size:17px;">
-    ✨ Generate Image
-  </button>
+header {
+  padding: 22px 15px;
+  text-align: center;
+  background: #191b2b;
+  border-bottom: 1px solid #303247;
+}
 
-  <p id="status"></p>
-  <div id="result"></div>
-</section>
+header h1 {
+  margin: 0;
+  font-size: 27px;
+  color: #a78bfa;
+}
+
+header p {
+  color: #aaa;
+  margin-bottom: 0;
+}
+
+.container {
+  width: 92%;
+  max-width: 700px;
+  margin: 25px auto;
+}
+
+.box {
+  background: #1c1e30;
+  padding: 22px;
+  border-radius: 18px;
+  border: 1px solid #34364d;
+}
+
+h2 {
+  margin-top: 0;
+}
+
+label {
+  display: block;
+  margin: 17px 0 8px;
+  color: #ddd;
+}
+
+textarea, select {
+  width: 100%;
+  padding: 14px;
+  border-radius: 10px;
+  border: 1px solid #454760;
+  background: #10111b;
+  color: white;
+  font-size: 15px;
+  outline: none;
+}
+
+textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+button {
+  width: 100%;
+  padding: 15px;
+  margin-top: 18px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(90deg,#7c3aed,#2563eb);
+  color: white;
+  font-size: 17px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: .6;
+}
+
+#status {
+  text-align: center;
+  margin: 17px 0;
+  color: #c4b5fd;
+}
+
+#result img {
+  width: 100%;
+  border-radius: 12px;
+  margin-top: 15px;
+}
+
+.download {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+  background: #16a34a;
+  color: white;
+  padding: 14px;
+  margin-top: 15px;
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+footer {
+  text-align: center;
+  padding: 25px;
+  color: #888;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>✨ Barun AI Studio</h1>
+  <p>Create Amazing AI Images For Free</p>
+</header>
+
+<div class="container">
+
+  <div class="box">
+
+    <h2>🎨 AI Image Generator</h2>
+
+    <p>Describe your imagination and create an AI image.</p>
+
+    <label for="prompt">Image Description</label>
+
+    <textarea
+      id="prompt"
+      placeholder="Example: A beautiful realistic village beside a river at sunset, cinematic lighting..."
+    ></textarea>
+
+    <label for="style">Choose Image Style</label>
+
+    <select id="style">
+      <option value="Photorealistic">Photorealistic</option>
+      <option value="3D Animation">3D Animation</option>
+      <option value="Cartoon">Cartoon</option>
+      <option value="Anime">Anime</option>
+      <option value="Cinematic">Cinematic</option>
+      <option value="Digital Art">Digital Art</option>
+    </select>
+
+    <button id="generateBtn" onclick="createImage()">
+      ✨ Generate Image
+    </button>
+
+    <div id="status"></div>
+
+    <div id="result"></div>
+
+  </div>
+
+</div>
+
+<footer>
+  © 2026 Barun AI Studio | Powered by AI
+</footer>
 
 <script>
+
 async function createImage() {
+
   const prompt = document.getElementById("prompt").value.trim();
   const style = document.getElementById("style").value;
   const status = document.getElementById("status");
   const result = document.getElementById("result");
+  const button = document.getElementById("generateBtn");
 
   if (!prompt) {
-    status.innerText = "Please write an image description!";
+    status.innerText = "Please describe your image first!";
     return;
   }
 
-  status.innerText = "Preparing your image...";
+  button.disabled = true;
+  button.innerText = "⏳ Generating...";
+  status.innerText = "AI is creating your image. Please wait...";
   result.innerHTML = "";
 
   try {
-    const response = await fetch("/api/generate-image", {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({
-        prompt: prompt,
-        style: style,
-        quality: "high"
-      })
-    });
 
-    if (!response.ok) throw new Error("Image service unavailable");
+    const response = await fetch(
+      "https://barun-ai-image.barunr426.workers.dev/api/generate-image",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          prompt: prompt,
+          style: style
+        })
+      }
+    );
 
     const data = await response.json();
 
-    if (!data.image_url) throw new Error("No image received");
+    if (!response.ok) {
+      throw new Error(data.error || "Image generation failed");
+    }
+
+    if (!data.image_url) {
+      throw new Error("No image received from AI");
+    }
 
     const img = document.createElement("img");
     img.src = data.image_url;
-    img.style.width = "100%";
-    img.style.borderRadius = "12px";
-    img.style.marginTop = "15px";
+    img.alt = "AI Generated Image";
+
     result.appendChild(img);
 
-    const link = document.createElement("a");
-    link.href = data.image_url;
-    link.download = "AI-Image.png";
-    link.innerText = "⬇ Download Image";
-    link.style.cssText = "display:block;padding:15px;background:#16a34a;color:white;text-align:center;border-radius:10px;margin-top:12px;text-decoration:none;";
-    result.appendChild(link);
+    const download = document.createElement("a");
+    download.href = data.image_url;
+    download.download = "Barun-AI-Image.png";
+    download.className = "download";
+    download.innerText = "⬇ Download Image";
 
-    status.innerText = "Image created successfully!";
+    result.appendChild(download);
+
+    status.innerText = "✅ Image created successfully!";
 
   } catch (error) {
-    status.innerText = "AI service is not connected yet. Please try again later.";
+
+    status.innerText = "❌ " + error.message;
+
+  } finally {
+
+    button.disabled = false;
+    button.innerText = "✨ Generate Image";
+
   }
+
 }
+
 </script>
 
-import gradio as gr
-from diffusers import DiffusionPipeline
-import torch
-
-pipe = DiffusionPipeline.from_pretrained("damo-vilab/modelscope-t2v", torch_dtype=torch.float16)
-pipe.to("cuda")
-
-def make_video(prompt):
-    video = pipe(prompt, num_frames=16).frames
-    return video
-
-demo = gr.Interface(
-  fn=make_video,
-  inputs=gr.Textbox(label="কি ভিডিও বানাতে চাও? বাংলায় লেখো"),
-  outputs=gr.Video(label="তোমার ভিডিও"),
-  title="DubVillage - ফ্রি AI ভিডিও",
-  description="দিনে ৩টা ভিডিও ফ্রি"
-)
-demo.launch()
+</body>
+</html>
