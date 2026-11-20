@@ -1,278 +1,500 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Barun AI Image Generator</title>
 
 <style>
-* {
-  box-sizing: border-box;
+
+*{
+box-sizing:border-box;
 }
 
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #10111b;
-  color: white;
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:linear-gradient(135deg,#09090b,#172554,#312e81);
+color:white;
+min-height:100vh;
 }
 
-header {
-  padding: 22px 15px;
-  text-align: center;
-  background: #191b2b;
-  border-bottom: 1px solid #303247;
+.container{
+width:100%;
+max-width:760px;
+margin:auto;
+padding:20px 15px 50px;
 }
 
-header h1 {
-  margin: 0;
-  font-size: 27px;
-  color: #a78bfa;
+h1{
+text-align:center;
+font-size:30px;
+margin:10px 0;
 }
 
-header p {
-  color: #aaa;
-  margin-bottom: 0;
+.subtitle{
+text-align:center;
+color:#cbd5e1;
+margin-bottom:25px;
 }
 
-.container {
-  width: 92%;
-  max-width: 700px;
-  margin: 25px auto;
+.card{
+background:rgba(255,255,255,.08);
+border:1px solid rgba(255,255,255,.15);
+border-radius:22px;
+padding:20px;
+box-shadow:0 10px 40px rgba(0,0,0,.3);
 }
 
-.box {
-  background: #1c1e30;
-  padding: 22px;
-  border-radius: 18px;
-  border: 1px solid #34364d;
-}
-
-h2 {
-  margin-top: 0;
-}
-
-label {
-  display: block;
-  margin: 17px 0 8px;
-  color: #ddd;
+label{
+display:block;
+font-weight:bold;
+margin:16px 0 8px;
 }
 
 textarea,
-select {
-  width: 100%;
-  padding: 14px;
-  border-radius: 10px;
-  border: 1px solid #454760;
-  background: #10111b;
-  color: white;
-  font-size: 15px;
-  outline: none;
+select{
+width:100%;
+padding:14px;
+border-radius:13px;
+border:1px solid rgba(255,255,255,.2);
+background:#0f172a;
+color:white;
+font-size:16px;
+outline:none;
 }
 
-textarea {
-  min-height: 120px;
-  resize: vertical;
+textarea{
+min-height:130px;
+resize:vertical;
 }
 
-button {
-  width: 100%;
-  padding: 15px;
-  margin-top: 18px;
-  border: none;
-  border-radius: 10px;
-  background: linear-gradient(90deg,#7c3aed,#2563eb);
-  color: white;
-  font-size: 17px;
-  font-weight: bold;
-  cursor: pointer;
+button{
+width:100%;
+border:0;
+border-radius:13px;
+padding:15px;
+margin-top:18px;
+font-size:17px;
+font-weight:bold;
+color:white;
+background:linear-gradient(90deg,#7c3aed,#2563eb);
+cursor:pointer;
 }
 
-button:disabled {
-  opacity: .6;
+button:disabled{
+opacity:.5;
+cursor:not-allowed;
 }
 
-#status {
-  text-align: center;
-  margin: 17px 0;
-  color: #c4b5fd;
+.secondary{
+background:#334155;
 }
 
-#result img {
-  width: 100%;
-  border-radius: 12px;
-  margin-top: 15px;
+#loading{
+display:none;
+text-align:center;
+margin-top:20px;
+color:#c4b5fd;
 }
 
-.download {
-  display: block;
-  text-align: center;
-  text-decoration: none;
-  background: #16a34a;
-  color: white;
-  padding: 14px;
-  margin-top: 15px;
-  border-radius: 10px;
-  font-weight: bold;
+#result{
+display:none;
+margin-top:25px;
 }
 
-footer {
-  text-align: center;
-  padding: 25px;
-  color: #888;
+#result img{
+width:100%;
+border-radius:18px;
+display:block;
+box-shadow:0 10px 30px rgba(0,0,0,.4);
 }
+
+.download{
+display:block;
+text-align:center;
+text-decoration:none;
+color:white;
+background:#059669;
+padding:14px;
+border-radius:12px;
+margin-top:15px;
+font-weight:bold;
+}
+
+.error{
+display:none;
+margin-top:15px;
+padding:12px;
+border-radius:10px;
+background:#7f1d1d;
+color:#fecaca;
+}
+
+.small{
+font-size:13px;
+color:#94a3b8;
+line-height:1.6;
+margin-top:12px;
+}
+
 </style>
 </head>
 
-<body>
 
-<header>
-  <h1>✨ Barun AI Studio</h1>
-  <p>Create Amazing AI Images For Free</p>
-</header>
+<body>
 
 <div class="container">
 
-  <div class="box">
+<h1>✨ Barun AI Image Generator</h1>
 
-    <h2>🎨 AI Image Generator</h2>
+<div class="subtitle">
+যা লিখবেন, AI সেটার অর্থ বুঝে সুন্দর ছবি তৈরি করবে
+</div>
 
-    <p>Describe your imagination and create an AI image.</p>
 
-    <label for="prompt">Image Description</label>
+<div class="card">
 
-    <textarea
-      id="prompt"
-      placeholder="Example: A beautiful realistic village beside a river at sunset, cinematic lighting..."
-    ></textarea>
 
-    <label for="style">Choose Image Style</label>
+<label for="prompt">
+📝 কী ছবি তৈরি করতে চান?
+</label>
 
-    <select id="style">
-      <option value="Photorealistic">Realistic Photo</option>
-      <option value="3D Animation">3D Animation</option>
-      <option value="Cartoon">Cartoon</option>
-      <option value="Anime">Anime</option>
-      <option value="Cinematic">Cinematic</option>
-      <option value="Digital Art">Digital Art</option>
+<textarea
+id="prompt"
+placeholder="উদাহরণ: একজন কৃষক সবুজ ধানের ক্ষেতে কাজ করছে, পেছনে সূর্যাস্ত..."
+></textarea>
 
-      <option value="Ultra HD Realistic Hindu Temple">
-        🛕 4K Beautiful Hindu Temple
-      </option>
 
-      <option value="Beautiful Krishna Temple">
-        🪷 Krishna Temple
-      </option>
+<label for="style">
+🎨 Image Style
+</label>
 
-      <option value="Radha Krishna Temple">
-        🙏 Radha Krishna Temple
-      </option>
+<select id="style">
 
-      <option value="Ancient Indian Temple">
-        🛕 Ancient Temple
-      </option>
+<option value="photorealistic">
+Realistic Photo
+</option>
 
-      <option value="Beautiful Temple at Sunset">
-        🌅 Sunset Temple
-      </option>
+<option value="cinematic">
+Cinematic
+</option>
 
-      <option value="Grand Temple Interior with Diyas and Flowers">
-        🪔 Temple Interior
-      </option>
-    </select>
+<option value="3D">
+3D Render
+</option>
 
-    <button id="generateBtn" onclick="createImage()">
-      ✨ Generate Image
-    </button>
+<option value="digital art">
+Digital Art
+</option>
 
-    <div id="status"></div>
+<option value="anime">
+Anime
+</option>
 
-    <div id="result"></div>
+<option value="fantasy">
+Fantasy
+</option>
 
-  </div>
+<option value="devotional art">
+Devotional Art
+</option>
+
+</select>
+
+
+<label for="quality">
+💎 Quality
+</label>
+
+<select id="quality">
+
+<option value="high quality, highly detailed">
+High Quality
+</option>
+
+<option value="ultra detailed, 4K">
+Ultra Detailed 4K
+</option>
+
+<option value="8K, extremely detailed">
+8K
+</option>
+
+</select>
+
+
+<label for="ratio">
+📐 Image Ratio
+</label>
+
+<select id="ratio">
+
+<option value="1024x1024">
+Square 1:1
+</option>
+
+<option value="768x1024">
+Portrait 3:4
+</option>
+
+<option value="1024x768">
+Landscape 4:3
+</option>
+
+<option value="576x1024">
+Shorts/Reels 9:16
+</option>
+
+<option value="1024x576">
+YouTube 16:9
+</option>
+
+</select>
+
+
+<button
+id="generateBtn"
+onclick="generateImage()">
+
+✨ Generate AI Image
+
+</button>
+
+
+<div id="loading">
+
+⏳ AI ছবি তৈরি করছে...<br>
+একটু অপেক্ষা করুন।
 
 </div>
 
-<footer>
-  © 2026 Barun AI Studio | Powered by AI
-</footer>
+
+<div id="error" class="error"></div>
+
+
+<div id="result">
+
+<img
+id="generatedImage"
+alt="AI Generated Image"
+>
+
+<a
+id="downloadBtn"
+class="download"
+download="barun-ai-image.jpg">
+
+⬇️ Download Image
+
+</a>
+
+</div>
+
+
+<p class="small">
+
+💡 টিপস: যত পরিষ্কারভাবে দৃশ্যটি লিখবেন,
+ফলাফল তত ভালো হবে। বাংলা, English, Hindi
+সহ বিভিন্ন ভাষায় prompt লিখতে পারবেন।
+
+</p>
+
+
+</div>
+
+</div>
+
 
 <script>
 
-async function createImage() {
 
-  const prompt = document.getElementById("prompt").value.trim();
-  const style = document.getElementById("style").value;
-  const status = document.getElementById("status");
-  const result = document.getElementById("result");
-  const button = document.getElementById("generateBtn");
+async function generateImage(){
 
-  if (!prompt) {
-    status.innerText = "Please describe your image first!";
-    return;
-  }
+const prompt =
+document.getElementById("prompt").value.trim();
 
-  button.disabled = true;
-  button.innerText = "⏳ Generating...";
-  status.innerText = "AI is creating your image. Please wait...";
-  result.innerHTML = "";
+const style =
+document.getElementById("style").value;
 
-  try {
+const quality =
+document.getElementById("quality").value;
 
-    const response = await fetch(
-      "https://barun-ai-image.barunr426.workers.dev/api/generate-image",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          prompt: prompt,
-          style: style
-        })
-      }
-    );
+const ratio =
+document.getElementById("ratio").value;
 
-    const data = await response.json();
 
-    if (!response.ok) {
-      throw new Error(data.error || "Image generation failed");
-    }
+if(!prompt){
 
-    if (!data.image_url) {
-      throw new Error("No image received from AI");
-    }
+alert("আগে কী ছবি চান সেটা লিখুন।");
 
-    const img = document.createElement("img");
-    img.src = data.image_url;
-    img.alt = "AI Generated Image";
+return;
 
-    result.appendChild(img);
+}
 
-    const download = document.createElement("a");
-    download.href = data.image_url;
-    download.download = "Barun-AI-Image.png";
-    download.className = "download";
-    download.innerText = "⬇ Download Image";
 
-    result.appendChild(download);
+const btn =
+document.getElementById("generateBtn");
 
-    status.innerText = "✅ Image created successfully!";
+const loading =
+document.getElementById("loading");
 
-  } catch (error) {
+const result =
+document.getElementById("result");
 
-    status.innerText = "❌ " + error.message;
+const errorBox =
+document.getElementById("error");
 
-  } finally {
+const image =
+document.getElementById("generatedImage");
 
-    button.disabled = false;
-    button.innerText = "✨ Generate Image";
+const download =
+document.getElementById("downloadBtn");
 
-  }
+
+btn.disabled=true;
+
+loading.style.display="block";
+
+result.style.display="none";
+
+errorBox.style.display="none";
+
+
+/*
+==================================================
+IMPORTANT AI PROMPT RULE
+==================================================
+
+ব্যবহারকারীর মূল বিষয় পরিবর্তন করা যাবে না।
+
+যেমন:
+
+কৃষক = Farmer
+কৃষ্ণ = Krishna
+
+দুটিকে এক করা যাবে না।
+*/
+
+
+const finalPrompt = `
+
+Create a beautiful ${style} image.
+
+IMPORTANT:
+Understand the user's description according to its
+actual meaning and preserve the user's requested
+subject exactly.
+
+Do NOT replace the requested person, object, animal,
+place, character or concept with another subject.
+
+If the user says farmer, create an ordinary farmer.
+If the user says Krishna, create Krishna.
+Do not confuse similar-sounding words.
+
+USER REQUEST:
+${prompt}
+
+VISUAL QUALITY:
+${quality}
+
+Make the composition beautiful and natural.
+
+Use realistic anatomy, detailed textures,
+beautiful lighting, depth, professional composition,
+clear subject, attractive background and high visual quality.
+
+Do not add unrelated people, objects or characters.
+
+Create only the image requested by the user.
+`;
+
+
+try{
+
+
+const encodedPrompt =
+encodeURIComponent(finalPrompt);
+
+
+/*
+বর্তমান Pollinations image endpoint
+*/
+
+const url =
+`https://gen.pollinations.ai/image/${encodedPrompt}`+
+`?model=flux`+
+`&width=${ratio.split("x")[0]}`+
+`&height=${ratio.split("x")[1]}`+
+`&enhance=true`+
+`&safe=true`;
+
+
+image.src=url;
+
+
+/*
+ছবি load হলে result দেখানো হবে
+*/
+
+image.onload=function(){
+
+loading.style.display="none";
+
+result.style.display="block";
+
+btn.disabled=false;
+
+
+/*
+Download link
+*/
+
+download.href=url;
+
+download.download="barun-ai-generated-image.jpg";
+
+};
+
+
+image.onerror=function(){
+
+loading.style.display="none";
+
+btn.disabled=false;
+
+errorBox.style.display="block";
+
+errorBox.innerText=
+"ছবি তৈরি করা যায়নি। আবার চেষ্টা করুন।";
+
+};
+
+
+}
+
+catch(error){
+
+console.error(error);
+
+loading.style.display="none";
+
+btn.disabled=false;
+
+errorBox.style.display="block";
+
+errorBox.innerText=
+"একটি সমস্যা হয়েছে। আবার চেষ্টা করুন।";
+
+}
 
 }
 
 </script>
+
 
 </body>
 </html>
